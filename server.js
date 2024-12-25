@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./Database/connection');
 const dotenv = require('dotenv');
-const multer = require('multer');
 const authRoutes = require('./routes/auth');
 const customerRoutes = require('./routes/customers');
 const propertyRoutes = require('./routes/properties');
@@ -16,10 +15,7 @@ const documentRoutes = require('./routes/Document');
 const bankRoutes = require('./routes/bankAccount');
 const dailyAttendanceRoutes = require('./routes/dailyAttendance');
 const contactUsRoutes = require('./routes/contactUs');
-const hostawayRoutes = require('./routes/hostaway');
-const UploadController = require('./controllers/uploadController');
-const StatusCodes = require('./constants/statusCode')
-require('./cron-jobs/syncHostaway');
+const uploadRoutes = require('./routes/upload');
 
 dotenv.config();
 connectDB();
@@ -30,29 +26,15 @@ app.use(cors());
 // Middleware to parse JSON requests
 app.use(express.json());
 
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {
-        fileSize: 5 * 1024 * 1024, // limit file size to 5MB
-    },
-});
-
-const uploadController = new UploadController();
-
-// Server health check
-app.get('/', (req, res) => {
-    res.send('Duomo Admin Portal Backend');
-});
-
-// s3 routes
-app.post('/getSignUrlForUpload',
-    upload.single('file'),
-    uploadController.upload);
-
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+// Server health check
+app.get('/', (req, res) => {
+    res.send('Duomo Admin Portal Backend');
 });
 
 // Auth Routes
@@ -66,9 +48,6 @@ app.use('/api/user', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/sales', salesRoutes);
 
-// Hostaway routes
-app.use('/api/hostaway', hostawayRoutes);
-
 // HR routes
 app.use('/api/hr/salary', salaryRoutes);
 
@@ -78,6 +57,12 @@ app.use('/api/user/bankdetails', bankRoutes);
 
 // Attendance
 app.use('/api/user/daily-attendance', dailyAttendanceRoutes);
+
+app.use('/upload', uploadRoutes);
+
+// Serve the uploaded files as static files
+
+app.use('/uploads', express.static('uploads'));
 
 // Notification.create({
 //     event_type: "order_creation",

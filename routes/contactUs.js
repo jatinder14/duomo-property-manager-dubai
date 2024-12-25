@@ -25,8 +25,7 @@ const sendEmail = (contact) => {
             Message: ${contact.message}
         `,
     };
-    console.log("----jatin",mailOptions);
-
+    
     return transporter.sendMail(mailOptions);
 };
 
