@@ -3,17 +3,7 @@ const cors = require('cors');
 const connectDB = require('./Database/connection');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
-const customerRoutes = require('./routes/customers');
 const propertyRoutes = require('./routes/properties');
-const bookingRoutes = require('./routes/bookings');
-const paymentRoutes = require('./routes/payments');
-const taskRoutes = require('./routes/task');
-const salesRoutes = require('./routes/sales');
-const userRoutes = require('./routes/User');
-const salaryRoutes = require('./routes/salary');
-const documentRoutes = require('./routes/Document');
-const bankRoutes = require('./routes/bankAccount');
-const dailyAttendanceRoutes = require('./routes/dailyAttendance');
 const contactUsRoutes = require('./routes/contactUs');
 const uploadRoutes = require('./routes/upload');
 
@@ -39,33 +29,9 @@ app.get('/', (req, res) => {
 
 // Auth Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/customers', customerRoutes);
 app.use('/mvl/api/properties', propertyRoutes);
 app.use('/mvl/api/contact', contactUsRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/tasks', taskRoutes);
-app.use('/api/sales', salesRoutes);
-
-// HR routes
-app.use('/api/hr/salary', salaryRoutes);
-
-// user documents
-app.use('/api/user/document', documentRoutes);
-app.use('/api/user/bankdetails', bankRoutes);
-
-// Attendance
-app.use('/api/user/daily-attendance', dailyAttendanceRoutes);
-
 app.use('/upload', uploadRoutes);
 
 // Serve the uploaded files as static files
-
 app.use('/uploads', express.static('uploads'));
-
-// Notification.create({
-//     event_type: "order_creation",
-//     details: `Order has been Accepted with id: ${orderIds}`,
-//     name: userName,
-//   })
